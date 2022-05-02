@@ -1,0 +1,116 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  #namespace: larapgsql
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:latest
+        imagePullPolicy: "IfNotPresent"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "150m"
+        env:
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-config
+              key: POSTGRES_DB
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-config
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-config
+              key: POSTGRES_PASSWORD
+        #envFrom:
+        #- configMapRef:
+        #  name: postgres-config
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: postgredb
+      volumes:
+      - name: postgredb
+        persistentVolumeClaim:
+          claimName: postgres-pv-claim
+
+---
+
+    apiVersion: v1
+    kind: PersistentVolume
+    metadata:
+      name: postgres-pv-volume
+      labels:
+        type: local
+        app: postgres
+    spec:
+      capacity:
+        storage: 500Mi
+      accessModes:
+        - ReadWriteMany
+      storageClassName: ""
+      hostPath:
+        path: "/srv/nfs/larapgsql/"
+
+---
+
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: postgres-pv-claim
+      #namespace: larapgsql
+      labels:
+        app: postgres
+    spec:
+      accessModes:
+      - ReadWriteMany
+      storageClassName: ""
+      resources:
+        requests:
+          storage: 100Mi
+    
+---
+
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: postgres-config
+      #namespace: larapgsql
+      labels:
+        app: postgres
+    data:
+      POSTGRES_DB: postgresdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+
+---
+
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: postgres
+      #namespace: larapgsql
+      labels:
+        app: postgres
+    spec:
+      type: NodePort
+      selector:
+        app: postgres
+      ports:
+      - name: postgres
+        port: 5432
+        nodePort: 30432

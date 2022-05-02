@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php
+  labels:
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: php
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: php
+        tier: backend
+    spec:
+      volumes:
+      - name: depl-nfs
+        persistentVolumeClaim:
+          claimName: pvc-nfs
+      containers:
+      - name: php
+        image: abdulbadi1524/php:7.4-fpm_alpine
+        resources:
+          limits:
+            cpu: "100m"
+            memory: "100Mi"
+        volumeMounts:
+        - name: depl-nfs
+          mountPath: /code
+        securityContext:
+            capabilities:
+              add: ["SYS_ADMIN"]
+        #command: ["/bin/sh"]
+        #args:
+        #  - -c
+        #  - >
+        #    while true;
+        #    do
+        #    set -ex;
+        #    wget https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -P /usr/local/bin/;
+        #    chmod +x /usr/local/bin/install-php-extensions;
+        #    install-php-extensions pdo_pgsql pgsql;
+        #    done
+
+#ln -sf /code/phpini/php.ini /usr/local/etc/php/php.ini;
+#php:7-fpm
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: php
+  labels:
+    tier: backend
+spec:
+  selector:
+    app: php
+    tier: backend
+  ports:
+    - protocol: TCP
+      port: 9000
