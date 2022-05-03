@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: postgres:latest
+        image: abdulbadi1524/postgres:v14.x
         imagePullPolicy: "IfNotPresent"
         resources:
           limits:
@@ -37,51 +37,32 @@ spec:
             configMapKeyRef:
               name: postgres-config
               key: POSTGRES_PASSWORD
-        #envFrom:
-        #- configMapRef:
-        #  name: postgres-config
         volumeMounts:
         - mountPath: /var/lib/postgresql/data
-          name: postgredb
+          name: postgres-nfs
+        securityContext:
+            capabilities:
+              add: ["SYS_ADMIN"]
       volumes:
-      - name: postgredb
+      - name: postgres-nfs
         persistentVolumeClaim:
           claimName: postgres-pv-claim
 
 ---
 
-    apiVersion: v1
-    kind: PersistentVolume
-    metadata:
-      name: postgres-pv-volume
-      labels:
-        type: local
-        app: postgres
-    spec:
-      capacity:
-        storage: 500Mi
-      accessModes:
-        - ReadWriteMany
-      storageClassName: ""
-      hostPath:
-        path: "/srv/nfs/larapgsql/"
-
----
-
-    apiVersion: v1
-    kind: PersistentVolumeClaim
-    metadata:
-      name: postgres-pv-claim
-      #namespace: larapgsql
-      labels:
-        app: postgres
-    spec:
-      accessModes:
-      - ReadWriteMany
-      storageClassName: ""
-      resources:
-        requests:
-          storage: 100Mi
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pv-claim
+  labels:
+    app: postgres
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 100Mi
     
 ---
 
