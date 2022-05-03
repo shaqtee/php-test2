@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: pgadmin4
-        image: fenglc/pgadmin4
+        image: abdulbadi1524/pgadmin:v4.0
         resources:
           limits:
             memory: "128Mi"

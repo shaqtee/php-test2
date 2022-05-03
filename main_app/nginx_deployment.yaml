@@ -27,14 +27,14 @@ spec:
           items:
           - key: config
             path: site.conf
-      securityContext: #accessPermission_on_mountVolume
-          runAsUser: 0 #command:id
-          runAsGroup: 82 #command:cat /etc/passwd
-          fsGroup: 82 #command:stat storage 82(www-data)
+      securityContext: # accessPermission_on_mountVolume
+          runAsUser: 0
+          runAsGroup: 82
+          fsGroup: 82 # www-data
           fsGroupChangePolicy: "OnRootMismatch"
       containers:
       - name: nginx
-        image: nginx:stable-alpine
+        image: abdulbadi1524/nginx:stable-alpine
         securityContext:
             capabilities:
               add: ["SYS_ADMIN"]
@@ -71,8 +71,3 @@ spec:
     tier: backend
     app: nginx
   type: LoadBalancer
-
-  #note:
-  #php artisan route:clear
-  #php artisan config:clear
-  #php artisan cache:clear

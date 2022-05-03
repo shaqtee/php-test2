@@ -33,20 +33,7 @@ spec:
         securityContext:
             capabilities:
               add: ["SYS_ADMIN"]
-        #command: ["/bin/sh"]
-        #args:
-        #  - -c
-        #  - >
-        #    while true;
-        #    do
-        #    set -ex;
-        #    wget https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -P /usr/local/bin/;
-        #    chmod +x /usr/local/bin/install-php-extensions;
-        #    install-php-extensions pdo_pgsql pgsql;
-        #    done
 
-#ln -sf /code/phpini/php.ini /usr/local/etc/php/php.ini;
-#php:7-fpm
 ---
 
 apiVersion: v1

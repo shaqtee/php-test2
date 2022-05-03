@@ -14,3 +14,4 @@ spec:
   nfs:
     server: 172.24.225.27
     path: "/srv/nfs/larapgsql/"
+  persistentVolumeReclaimPolicy: Retain
