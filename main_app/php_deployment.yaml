@@ -22,7 +22,7 @@ spec:
           claimName: pvc-nfs
       containers:
       - name: php
-        image: abdulbadi1524/php:7.4-fpm_alpine
+        image: abdulbadi1524/php:7.4-fpm-alpine-plus
         resources:
           limits:
             cpu: "100m"
@@ -33,7 +33,7 @@ spec:
         securityContext:
             capabilities:
               add: ["SYS_ADMIN"]
-
+        workingDir: /code/app
 ---
 
 apiVersion: v1

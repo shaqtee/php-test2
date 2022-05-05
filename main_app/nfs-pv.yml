@@ -12,6 +12,6 @@ spec:
     namespace: default
     name: pvc-nfs
   nfs:
-    server: 172.24.225.27
+    server: 172.31.218.120
     path: "/srv/nfs/larapgsql/"
   persistentVolumeReclaimPolicy: Retain

@@ -24,5 +24,7 @@ Simpel project untuk konfigurasi kubernetes Phpapp & Postgres dengan NFS(Network
 
 ```
   mkdir /srv/nfs/larapgsql/app -p
+  sudo chown -R 82:82 .
+
   mkdir /srv/nfs/db_dataku/ -p
 ```
